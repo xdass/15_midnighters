@@ -20,13 +20,25 @@ def load_attempts():
 
 
 def get_midnighters():
-    pass
+    start_time = datetime.time(hour=0, minute=0, microsecond=0)
+    end_time = datetime.time(hour=6, minute=0, microsecond=0)
+    midnighters = []
+    for user_attempt in load_attempts():
+        timezone = pytz.timezone(user_attempt['timezone'])
+        time = timezone.localize(datetime.datetime.fromtimestamp(user_attempt['timestamp']))
+        # time = datetime.datetime.fromtimestamp(user['timestamp'])
+        if (time.time() > start_time) and (time.time() < end_time):
+            print(time.strftime('%H:%M'))
+            midnighters.append(user_attempt)
+    return midnighters
+
+
+def print_midnighters():
+    unique_midnighters = {item['username'] for item in midnighters}
+    for name in unique_midnighters:
+        print(name)
 
 if __name__ == '__main__':
-    start_datetime = datetime.time(hour=0, minute=0, microsecond=0)
-    end_datetime = datetime.time(hour=6, minute=0, microsecond=0)
-    for user in load_attempts():
-        timezone = pytz.timezone(user['timezone'])
-        time = timezone.localize(datetime.datetime.fromtimestamp(user['timestamp']))
-        if (time.time() > start_datetime) and (time.time() < end_datetime):
-            print(time.strftime('%H:%M'))
+    midnighters = get_midnighters()
+    print_midnighters()
+
