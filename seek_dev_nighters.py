@@ -28,17 +28,18 @@ def get_midnighters():
         time = timezone.localize(datetime.datetime.fromtimestamp(user_attempt['timestamp']))
         # time = datetime.datetime.fromtimestamp(user['timestamp'])
         if (time.time() > start_time) and (time.time() < end_time):
-            print(time.strftime('%H:%M'))
+            #print(time.strftime('%H:%M'))
             midnighters.append(user_attempt)
     return midnighters
 
 
-def print_midnighters():
-    unique_midnighters = {item['username'] for item in midnighters}
+def print_midnighters(midnighters_list):
+    unique_midnighters = {item['username'] for item in midnighters_list}
+    print('Список сов Devman\'a:')
     for name in unique_midnighters:
         print(name)
 
 if __name__ == '__main__':
-    midnighters = get_midnighters()
-    print_midnighters()
+    all_midnighters = get_midnighters()
+    print_midnighters(all_midnighters)
 
