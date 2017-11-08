@@ -26,9 +26,7 @@ def get_midnighters():
     for user_attempt in load_attempts():
         timezone = pytz.timezone(user_attempt['timezone'])
         time = timezone.localize(datetime.datetime.fromtimestamp(user_attempt['timestamp']))
-        # time = datetime.datetime.fromtimestamp(user['timestamp'])
         if (time.time() > start_time) and (time.time() < end_time):
-            #print(time.strftime('%H:%M'))
             midnighters.append(user_attempt)
     return midnighters
 
