@@ -33,7 +33,7 @@ def get_midnighters():
 
 
 def print_midnighters(midnighters_list):
-    unique_midnighters = {item['username'] for item in midnighters_list}
+    unique_midnighters = {midnighter_info['username'] for midnighter_info in midnighters_list}
     print('Список сов Devman\'a:')
     for midnighter_name in unique_midnighters:
         print(midnighter_name)
