@@ -13,7 +13,8 @@ def load_attempts():
     offset = 1
     pages = get_pages_count() + offset
     for page in range(1, pages):
-        raw_result = requests.get('http://devman.org/api/challenges/solution_attempts/?page={}'.format(page))
+        payload = {'page': page}
+        raw_result = requests.get('http://devman.org/api/challenges/solution_attempts/', params=payload)
         records = raw_result.json()['records']
         for user_attempt in records:
             yield user_attempt
@@ -34,8 +35,8 @@ def get_midnighters():
 def print_midnighters(midnighters_list):
     unique_midnighters = {item['username'] for item in midnighters_list}
     print('Список сов Devman\'a:')
-    for name in unique_midnighters:
-        print(name)
+    for midnighter_name in unique_midnighters:
+        print(midnighter_name)
 
 if __name__ == '__main__':
     all_midnighters = get_midnighters()
