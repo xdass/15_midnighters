@@ -11,29 +11,31 @@ def get_pages_count():
 
 def load_attempts():
     offset = 1
-    pages = get_pages_count() + offset
-    for page in range(1, pages):
+    records = []
+    response = requests.get('http://devman.org/api/challenges/solution_attempts', params={'page': 1})
+    pages = response.json()['number_of_pages'] + offset
+    records.extend(response.json()['records'])
+    for page in range(2, pages):
         payload = {'page': page}
         raw_result = requests.get('http://devman.org/api/challenges/solution_attempts/', params=payload)
-        records = raw_result.json()['records']
-        for user_attempt in records:
-            yield user_attempt
+        records.extend(raw_result.json()['records'])
+    yield from records
 
 
 def get_midnighters():
     start_time = datetime.time(hour=0, minute=0, microsecond=0)
     end_time = datetime.time(hour=6, minute=0, microsecond=0)
-    midnighters = []
+    midnighters_attempts = []
     for user_attempt in load_attempts():
         timezone = pytz.timezone(user_attempt['timezone'])
-        time = timezone.localize(datetime.datetime.fromtimestamp(user_attempt['timestamp']))
-        if (time.time() > start_time) and (time.time() < end_time):
-            midnighters.append(user_attempt)
-    return midnighters
+        _datetime = timezone.localize(datetime.datetime.fromtimestamp(user_attempt['timestamp']))
+        if (_datetime.time() > start_time) and _datetime.time() < end_time:
+            midnighters_attempts.append(user_attempt)
+    return midnighters_attempts
 
 
-def print_midnighters(midnighters_list):
-    unique_midnighters = {midnighter_info['username'] for midnighter_info in midnighters_list}
+def print_midnighters(midnighters_attempts):
+    unique_midnighters = {attempt_info['username'] for attempt_info in midnighters_attempts}
     print('Список сов Devman\'a:')
     for midnighter_name in unique_midnighters:
         print(midnighter_name)
